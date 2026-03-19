@@ -1,0 +1,459 @@
+.loginPage {
+  min-height: 100vh;
+  position: relative;
+  background: #000;
+  color: white;
+  overflow: hidden;
+}
+
+.collage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 8px;
+  transform: scale(1.08);
+}
+
+.collageImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 220px;
+  filter: brightness(0.45) saturate(0.9);
+}
+
+.loginOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.82)),
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.85));
+}
+
+.loginContent {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.loginTop {
+  padding: 28px 40px;
+}
+
+.wordmark,
+.wordmarkSmall {
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  color: #e50914;
+}
+
+.wordmark {
+  font-size: 44px;
+}
+
+.wordmarkSmall {
+  font-size: 24px;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 430px;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.78);
+  border-radius: 24px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+
+.loginTitle {
+  margin: 0 0 10px;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.loginSub {
+  margin: 0 0 22px;
+  color: #b3b3b3;
+  font-size: 15px;
+}
+
+.loginInput {
+  width: 100%;
+  height: 54px;
+  background: rgba(22, 22, 22, 0.92);
+  border: 1px solid #444;
+  border-radius: 14px;
+  color: white;
+  padding: 0 16px;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+.loginButton {
+  width: 100%;
+  height: 54px;
+  border: 0;
+  border-radius: 14px;
+  background: #e50914;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background: #c80812;
+}
+
+.loginError {
+  margin-top: 12px;
+  color: #ff7b7b;
+  font-size: 14px;
+}
+
+.introScreen {
+  min-height: 100vh;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.introGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(229, 9, 20, 0.12), transparent 40%);
+}
+
+.introBars {
+  position: absolute;
+  height: 70vh;
+  width: 220px;
+  display: flex;
+  gap: 8px;
+  opacity: 0.85;
+}
+
+.introBars span {
+  flex: 1;
+  background: linear-gradient(to bottom, #2a0000, #ff0015, #2a0000);
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.45);
+  animation: streak 1.5s ease-in-out infinite alternate;
+}
+
+.introBars span:nth-child(2) { animation-delay: 0.1s; }
+.introBars span:nth-child(3) { animation-delay: 0.2s; }
+.introBars span:nth-child(4) { animation-delay: 0.3s; }
+.introBars span:nth-child(5) { animation-delay: 0.4s; }
+.introBars span:nth-child(6) { animation-delay: 0.5s; }
+.introBars span:nth-child(7) { animation-delay: 0.6s; }
+
+.introLogo {
+  position: relative;
+  z-index: 2;
+  font-size: 70px;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  color: #ff101c;
+  text-shadow: 0 0 18px rgba(255, 0, 30, 0.45);
+}
+
+.introSweep {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: sweep 1.8s ease forwards;
+}
+
+@keyframes streak {
+  from {
+    transform: scaleY(0.75);
+    opacity: 0.65;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.appPage {
+  min-height: 100vh;
+  background: #141414;
+  color: white;
+}
+
+.appHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 28px;
+  background: rgba(20, 20, 20, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.headerLeft,
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.headerLink {
+  background: transparent;
+  border: 0;
+  color: #d4d4d8;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.headerLink:hover {
+  color: white;
+}
+
+.searchBox,
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1c1c1c;
+  border: 1px solid #2d2d2d;
+  color: #d4d4d8;
+  border-radius: 999px;
+  padding: 10px 14px;
+}
+
+.logoutBtn {
+  cursor: pointer;
+}
+
+.hero {
+  position: relative;
+  height: 72vh;
+  background-size: cover;
+  background-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3)),
+    linear-gradient(to top, #141414 2%, transparent 35%);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+  padding: 120px 32px 32px;
+}
+
+.heroTag {
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+}
+
+.heroTitle {
+  font-size: 64px;
+  line-height: 1;
+  margin: 10px 0 14px;
+}
+
+.heroText {
+  color: #ddd;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+.heroActions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.primaryBtn,
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryBtn {
+  background: white;
+  color: black;
+}
+
+.secondaryBtn {
+  background: rgba(109, 109, 110, 0.75);
+  color: white;
+}
+
+.rowSection {
+  padding: 26px 32px;
+}
+
+.sectionTitle {
+  font-size: 28px;
+  margin: 0 0 16px;
+}
+
+.cardRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.showCard {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: #1a1a1a;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 220px;
+}
+
+.showCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.showCardShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.18));
+}
+
+.showCardInfo {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  text-align: left;
+}
+
+.showCardInfo h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.showCardInfo p {
+  margin: 0;
+  color: #d4d4d8;
+}
+
+.episodeList {
+  display: grid;
+  gap: 14px;
+}
+
+.episodeCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  background: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.episodeTitle {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.episodeText,
+.creatorText,
+.watchInfo p {
+  color: #c4c4c5;
+}
+
+.watchWrap,
+.creatorWrap {
+  padding: 32px;
+}
+
+.watchCard,
+.creatorCard {
+  background: #181818;
+  border: 1px solid #2d2d2d;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.videoPlayer {
+  width: 100%;
+  max-height: 72vh;
+  background: black;
+}
+
+.watchInfo {
+  padding: 22px;
+}
+
+@media (max-width: 900px) {
+  .collage {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .heroTitle {
+    font-size: 42px;
+  }
+
+  .cardRow {
+    grid-template-columns: 1fr;
+  }
+
+  .episodeCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .appHeader {
+    padding: 0 16px;
+  }
+
+  .headerLeft,
+  .headerRight {
+    gap: 10px;
+  }
+
+  .wordmarkSmall {
+    font-size: 18px;
+  }
+
+  .introLogo {
+    font-size: 40px;
+  }
+}
