@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search, Plus, Play, LogOut } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Play,
+  LogOut,
+  ChevronRight,
+  Film,
+  Tv,
+  Edit3,
+  Trash2,
+} from "lucide-react";
 import styles from "./page.module.css";
 
 const VIEWER_CODE = "famwatch2026";
@@ -18,15 +28,17 @@ const collageImages = [
   "https://images.unsplash.com/photo-1518932945647-7a1c969f8be2?q=80&w=1200&auto=format&fit=crop",
 ];
 
-const starterShows = [
+const initialShows = [
   {
     id: "show-1",
     title: "Shadow School",
-    description: "A student-made mystery series with secrets, rivalries, and strange clues.",
+    description:
+      "A student-made mystery series with secrets, rivalries, and strange clues.",
     banner:
       "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600&auto=format&fit=crop",
     cover:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=900&auto=format&fit=crop",
+    featured: true,
     episodes: [
       {
         id: "ep-1",
@@ -50,6 +62,7 @@ const starterShows = [
       "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop",
     cover:
       "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=900&auto=format&fit=crop",
+    featured: false,
     episodes: [
       {
         id: "ep-3",
@@ -59,11 +72,29 @@ const starterShows = [
       },
     ],
   },
+  {
+    id: "show-3",
+    title: "After Class",
+    description: "Late-night plans, tension, laughs, and hidden problems.",
+    banner:
+      "https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1600&auto=format&fit=crop",
+    cover:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=900&auto=format&fit=crop",
+    featured: false,
+    episodes: [
+      {
+        id: "ep-4",
+        title: "Group Chat",
+        description: "One message changes the whole night.",
+        videoUrl: "https://www.w3schools.com/html/movie.mp4",
+      },
+    ],
+  },
 ];
 
 function IntroAnimation({ onDone }) {
   useEffect(() => {
-    const timer = setTimeout(onDone, 2200);
+    const timer = setTimeout(onDone, 3400);
     return () => clearTimeout(timer);
   }, [onDone]);
 
@@ -124,20 +155,65 @@ function LoginScreen({ code, setCode, error, onEnter }) {
     </main>
   );
 }
+function ShowCard({ show, active, onSelect }) {
+  return (
+    <button
+      className={`${styles.showCard} ${active ? styles.showCardActive : ""}`}
+      onClick={() => onSelect(show.id)}
+    >
+      <img src={show.cover} alt={show.title} className={styles.showCardImage} />
+      <div className={styles.showCardShade} />
+      <div className={styles.showCardInfo}>
+        <h3>{show.title}</h3>
+        <p>{show.episodes.length} episode(s)</p>
+      </div>
+    </button>
+  );
+}
+
+function EpisodeCard({ episode, onWatch }) {
+  return (
+    <div className={styles.episodeCard}>
+      <div>
+        <h3 className={styles.episodeTitle}>{episode.title}</h3>
+        <p className={styles.episodeText}>{episode.description}</p>
+      </div>
+      <button className={styles.primaryBtn} onClick={() => onWatch(episode)}>
+        <Play size={16} />
+        Watch
+      </button>
+    </div>
+  );
+}
 
 export default function Home() {
   const [enteredCode, setEnteredCode] = useState("");
   const [error, setError] = useState("");
   const [mode, setMode] = useState(null);
   const [showIntro, setShowIntro] = useState(false);
+
   const [view, setView] = useState("home");
-  const [shows] = useState(starterShows);
-  const [selectedShowId, setSelectedShowId] = useState(starterShows[0].id);
-  const [selectedEpisode, setSelectedEpisode] = useState(starterShows[0].episodes[0]);
+  const [shows, setShows] = useState(initialShows);
+  const [selectedShowId, setSelectedShowId] = useState(initialShows[0].id);
+  const [selectedEpisode, setSelectedEpisode] = useState(initialShows[0].episodes[0]);
+
+  const [newShowTitle, setNewShowTitle] = useState("");
+  const [newShowDescription, setNewShowDescription] = useState("");
+  const [newShowCover, setNewShowCover] = useState("");
+  const [newShowBanner, setNewShowBanner] = useState("");
+
+  const [newEpisodeTitle, setNewEpisodeTitle] = useState("");
+  const [newEpisodeDescription, setNewEpisodeDescription] = useState("");
+  const [newEpisodeUrl, setNewEpisodeUrl] = useState("");
 
   const selectedShow = useMemo(
     () => shows.find((show) => show.id === selectedShowId) || shows[0],
     [shows, selectedShowId]
+  );
+
+  const featuredShow = useMemo(
+    () => shows.find((show) => show.featured) || shows[0],
+    [shows]
   );
 
   const handleEnter = () => {
@@ -163,8 +239,77 @@ export default function Home() {
     setEnteredCode("");
     setError("");
     setView("home");
-    setSelectedShowId(starterShows[0].id);
-    setSelectedEpisode(starterShows[0].episodes[0]);
+  };
+
+  const watchEpisode = (episode) => {
+    setSelectedEpisode(episode);
+    setView("watch");
+  };
+
+  const addShow = () => {
+    if (!newShowTitle.trim()) return;
+
+    const show = {
+      id: `show-${Date.now()}`,
+      title: newShowTitle,
+      description: newShowDescription || "New series on SMBAFLEX.",
+      cover:
+        newShowCover ||
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=900&auto=format&fit=crop",
+      banner:
+        newShowBanner ||
+        newShowCover ||
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1600&auto=format&fit=crop",
+      featured: false,
+      episodes: [],
+    };
+
+    setShows((prev) => [...prev, show]);
+    setSelectedShowId(show.id);
+    setNewShowTitle("");
+    setNewShowDescription("");
+    setNewShowCover("");
+    setNewShowBanner("");
+  };
+
+  const addEpisode = () => {
+    if (!newEpisodeTitle.trim() || !newEpisodeUrl.trim()) return;
+
+    const episode = {
+      id: `ep-${Date.now()}`,
+      title: newEpisodeTitle,
+      description: newEpisodeDescription || "New episode.",
+      videoUrl: newEpisodeUrl,
+    };
+
+    setShows((prev) =>
+      prev.map((show) =>
+        show.id === selectedShowId
+          ? { ...show, episodes: [...show.episodes, episode] }
+          : show
+      )
+    );
+
+    setNewEpisodeTitle("");
+    setNewEpisodeDescription("");
+    setNewEpisodeUrl("");
+  };
+
+  const deleteCurrentShow = () => {
+    if (shows.length <= 1) return;
+    const nextShows = shows.filter((show) => show.id !== selectedShowId);
+    setShows(nextShows);
+    setSelectedShowId(nextShows[0].id);
+    setSelectedEpisode(nextShows[0].episodes[0] || null);
+  };
+
+  const makeFeatured = (id) => {
+    setShows((prev) =>
+      prev.map((show) => ({
+        ...show,
+        featured: show.id === id,
+      }))
+    );
   };
 
   if (!mode) {
@@ -206,32 +351,43 @@ export default function Home() {
           </button>
         </div>
       </header>
-
-      {view === "home" && (
+            {view === "home" && (
         <>
           <section
             className={styles.hero}
-            style={{ backgroundImage: `url(${selectedShow.banner})` }}
+            style={{ backgroundImage: `url(${featuredShow.banner})` }}
           >
             <div className={styles.heroOverlay} />
             <div className={styles.heroContent}>
-              <p className={styles.heroTag}>{mode === "creator" ? "Creator Preview" : "Featured Series"}</p>
-              <h1 className={styles.heroTitle}>{selectedShow.title}</h1>
-              <p className={styles.heroText}>{selectedShow.description}</p>
+              <p className={styles.heroTag}>
+                {mode === "creator" ? "Creator Preview" : "Featured Series"}
+              </p>
+              <h1 className={styles.heroTitle}>{featuredShow.title}</h1>
+              <p className={styles.heroText}>{featuredShow.description}</p>
               <div className={styles.heroActions}>
                 <button
                   className={styles.primaryBtn}
                   onClick={() => {
-                    setSelectedEpisode(selectedShow.episodes[0]);
+                    setSelectedShowId(featuredShow.id);
+                    setSelectedEpisode(featuredShow.episodes[0]);
                     setView("watch");
                   }}
                 >
                   <Play size={16} />
                   Play
                 </button>
+
+                <button
+                  className={styles.secondaryBtn}
+                  onClick={() => setSelectedShowId(featuredShow.id)}
+                >
+                  <Film size={16} />
+                  Details
+                </button>
+
                 {mode === "creator" && (
                   <button className={styles.secondaryBtn} onClick={() => setView("creator")}>
-                    <Plus size={16} />
+                    <Edit3 size={16} />
                     Creator Tools
                   </button>
                 )}
@@ -240,58 +396,60 @@ export default function Home() {
           </section>
 
           <section className={styles.rowSection}>
-            <h2 className={styles.sectionTitle}>Watch Now</h2>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Watch Now</h2>
+              <button className={styles.moreBtn}>
+                Explore <ChevronRight size={16} />
+              </button>
+            </div>
+
             <div className={styles.cardRow}>
               {shows.map((show) => (
-                <button
+                <ShowCard
                   key={show.id}
-                  className={styles.showCard}
-                  onClick={() => setSelectedShowId(show.id)}
-                >
-                  <img src={show.cover} alt={show.title} className={styles.showCardImage} />
-                  <div className={styles.showCardShade} />
-                  <div className={styles.showCardInfo}>
-                    <h3>{show.title}</h3>
-                    <p>{show.episodes.length} episode(s)</p>
-                  </div>
-                </button>
+                  show={show}
+                  active={show.id === selectedShowId}
+                  onSelect={setSelectedShowId}
+                />
               ))}
             </div>
           </section>
 
           <section className={styles.rowSection}>
-            <h2 className={styles.sectionTitle}>Episodes</h2>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>{selectedShow.title} Episodes</h2>
+            </div>
+
             <div className={styles.episodeList}>
               {selectedShow.episodes.map((ep) => (
-                <div key={ep.id} className={styles.episodeCard}>
-                  <div>
-                    <h3 className={styles.episodeTitle}>{ep.title}</h3>
-                    <p className={styles.episodeText}>{ep.description}</p>
-                  </div>
-                  <button
-                    className={styles.primaryBtn}
-                    onClick={() => {
-                      setSelectedEpisode(ep);
-                      setView("watch");
-                    }}
-                  >
-                    <Play size={16} />
-                    Watch
-                  </button>
-                </div>
+                <EpisodeCard key={ep.id} episode={ep} onWatch={watchEpisode} />
               ))}
             </div>
           </section>
         </>
       )}
 
-      {view === "watch" && (
+      {view === "watch" && selectedEpisode && (
         <section className={styles.watchWrap}>
           <div className={styles.watchCard}>
             <video className={styles.videoPlayer} controls src={selectedEpisode.videoUrl} />
             <div className={styles.watchInfo}>
               <h2>{selectedEpisode.title}</h2>
               <p>{selectedEpisode.description}</p>
+
+              <div className={styles.watchActions}>
+                <button className={styles.secondaryBtn} onClick={() => setView("home")}>
+                  Back Home
+                </button>
+              </div>
+
+              <div className={styles.episodeList}>
+                {selectedShow.episodes
+                  .filter((ep) => ep.id !== selectedEpisode.id)
+                  .map((ep) => (
+                    <EpisodeCard key={ep.id} episode={ep} onWatch={watchEpisode} />
+                  ))}
+              </div>
             </div>
           </div>
         </section>
@@ -299,11 +457,80 @@ export default function Home() {
 
       {view === "creator" && mode === "creator" && (
         <section className={styles.creatorWrap}>
-          <div className={styles.creatorCard}>
-            <h2 className={styles.sectionTitle}>Creator Dashboard</h2>
-            <p className={styles.creatorText}>
-              This is the clean creator area. Next we’ll add show uploads, seasons, and episode management here.
-            </p>
+          <div className={styles.creatorGrid}>
+            <div className={styles.creatorCard}>
+              <h2 className={styles.sectionTitle}>Add Show</h2>
+              <input
+                className={styles.creatorInput}
+                placeholder="Show title"
+                value={newShowTitle}
+                onChange={(e) => setNewShowTitle(e.target.value)}
+              />
+              <textarea
+                className={styles.creatorTextarea}
+                placeholder="Show description"
+                value={newShowDescription}
+                onChange={(e) => setNewShowDescription(e.target.value)}
+              />
+              <input
+                className={styles.creatorInput}
+                placeholder="Cover image URL"
+                value={newShowCover}
+                onChange={(e) => setNewShowCover(e.target.value)}
+              />
+              <input
+                className={styles.creatorInput}
+                placeholder="Banner image URL"
+                value={newShowBanner}
+                onChange={(e) => setNewShowBanner(e.target.value)}
+              />
+              <button className={styles.primaryBtn} onClick={addShow}>
+                <Plus size={16} />
+                Add Show
+              </button>
+            </div>
+
+            <div className={styles.creatorCard}>
+              <h2 className={styles.sectionTitle}>Manage Show</h2>
+              <p className={styles.creatorText}>Current: {selectedShow.title}</p>
+
+              <div className={styles.creatorButtonRow}>
+                <button className={styles.secondaryBtn} onClick={() => makeFeatured(selectedShow.id)}>
+                  <Tv size={16} />
+                  Set Featured
+                </button>
+                <button className={styles.deleteBtn} onClick={deleteCurrentShow}>
+                  <Trash2 size={16} />
+                  Delete Show
+                </button>
+              </div>
+
+              <hr className={styles.divider} />
+
+              <h3 className={styles.subTitle}>Add Episode</h3>
+              <input
+                className={styles.creatorInput}
+                placeholder="Episode title"
+                value={newEpisodeTitle}
+                onChange={(e) => setNewEpisodeTitle(e.target.value)}
+              />
+              <textarea
+                className={styles.creatorTextarea}
+                placeholder="Episode description"
+                value={newEpisodeDescription}
+                onChange={(e) => setNewEpisodeDescription(e.target.value)}
+              />
+              <input
+                className={styles.creatorInput}
+                placeholder="Direct video URL"
+                value={newEpisodeUrl}
+                onChange={(e) => setNewEpisodeUrl(e.target.value)}
+              />
+              <button className={styles.primaryBtn} onClick={addEpisode}>
+                <Plus size={16} />
+                Add Episode
+              </button>
+            </div>
           </div>
         </section>
       )}
