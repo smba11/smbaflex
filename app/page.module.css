@@ -146,7 +146,7 @@
   flex: 1;
   background: linear-gradient(to bottom, #2a0000, #ff0015, #2a0000);
   box-shadow: 0 0 20px rgba(229, 9, 20, 0.45);
-  animation: streak 1.5s ease-in-out infinite alternate;
+  animation: streak 1.8s ease-in-out infinite alternate;
 }
 
 .introBars span:nth-child(2) { animation-delay: 0.1s; }
@@ -171,7 +171,7 @@
   inset: -20%;
   background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
   transform: translateX(-100%);
-  animation: sweep 1.8s ease forwards;
+  animation: sweep 2.1s ease forwards;
 }
 
 @keyframes streak {
@@ -288,14 +288,19 @@
   max-width: 560px;
 }
 
-.heroActions {
+.heroActions,
+.watchActions,
+.creatorButtonRow {
   margin-top: 24px;
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .primaryBtn,
-.secondaryBtn {
+.secondaryBtn,
+.deleteBtn,
+.moreBtn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -311,13 +316,26 @@
   color: black;
 }
 
-.secondaryBtn {
+.secondaryBtn,
+.moreBtn {
   background: rgba(109, 109, 110, 0.75);
+  color: white;
+}
+
+.deleteBtn {
+  background: #a3121a;
   color: white;
 }
 
 .rowSection {
   padding: 26px 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
 .sectionTitle {
@@ -327,7 +345,7 @@
 
 .cardRow {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -340,6 +358,17 @@
   overflow: hidden;
   cursor: pointer;
   min-height: 220px;
+  text-align: left;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.showCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.showCardActive {
+  outline: 2px solid rgba(255, 255, 255, 0.28);
 }
 
 .showCardImage {
@@ -359,7 +388,6 @@
   left: 18px;
   right: 18px;
   bottom: 16px;
-  text-align: left;
 }
 
 .showCardInfo h3 {
@@ -422,6 +450,44 @@
   padding: 22px;
 }
 
+.creatorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.creatorCard {
+  padding: 22px;
+}
+
+.creatorInput,
+.creatorTextarea {
+  width: 100%;
+  background: #111;
+  border: 1px solid #313131;
+  color: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.creatorTextarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.subTitle {
+  margin: 8px 0 12px;
+  font-size: 20px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #2d2d2d;
+  margin: 18px 0;
+}
+
 @media (max-width: 900px) {
   .collage {
     grid-template-columns: repeat(2, 1fr);
@@ -431,7 +497,8 @@
     font-size: 42px;
   }
 
-  .cardRow {
+  .cardRow,
+  .creatorGrid {
     grid-template-columns: 1fr;
   }
 
