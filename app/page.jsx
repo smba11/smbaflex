@@ -1,17 +1,40 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Search,
-  Plus,
-  Play,
-  LogOut,
+  Bell,
+  BarChart3,
+  Check,
+  ChevronDown,
   ChevronRight,
+  Clock3,
+  Eye,
   Film,
-  Tv,
-  Edit3,
+  Gauge,
+  Heart,
+  Info,
+  LayoutDashboard,
+  ListPlus,
+  LogOut,
+  MessageCircle,
+  MonitorPlay,
+  Pause,
+  Play,
+  Plus,
+  Search,
+  Settings,
+  SkipForward,
+  SlidersHorizontal,
+  Sparkles,
+  Star,
+  ThumbsDown,
+  ThumbsUp,
   Trash2,
-  User,
+  UploadCloud,
+  Users,
+  Volume2,
+  Wand2,
+  X,
 } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -33,24 +56,48 @@ const initialShows = [
   {
     id: "show-1",
     title: "Shadow School",
+    tagline: "Every hallway hides a signal.",
     description:
-      "A student-made mystery series with secrets, rivalries, and strange clues.",
+      "A prestige student mystery series where late bells, secret clubs, and strange clues pull an entire campus into one cinematic conspiracy.",
     banner:
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1800&auto=format&fit=crop",
     cover:
       "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=900&auto=format&fit=crop",
+    trailer:
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1400&auto=format&fit=crop",
     featured: true,
+    published: true,
+    genre: "Drama",
+    year: "2026",
+    rating: "TV-14",
+    match: "98%",
+    duration: "42m",
+    seasons: 2,
+    views: "1.8M",
+    heat: 94,
     episodes: [
       {
         id: "ep-1",
         title: "The First Bell",
-        description: "A normal day at school turns into something bigger.",
+        description: "A normal day at school becomes the first clue in a much bigger pattern.",
+        duration: "42m",
+        rating: "TV-14",
+        season: 1,
+        progress: 62,
+        thumbnail:
+          "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=900&auto=format&fit=crop",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
       },
       {
         id: "ep-2",
         title: "Rumors",
-        description: "Everybody knows something, but nobody knows enough.",
+        description: "Everybody knows something, but nobody knows enough to stay safe.",
+        duration: "38m",
+        rating: "TV-14",
+        season: 1,
+        progress: 18,
+        thumbnail:
+          "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=900&auto=format&fit=crop",
         videoUrl: "https://www.w3schools.com/html/movie.mp4",
       },
     ],
@@ -58,17 +105,36 @@ const initialShows = [
   {
     id: "show-2",
     title: "Hallway Tapes",
-    description: "Different stories, same school, every hallway has a history.",
+    tagline: "Different stories. Same school.",
+    description:
+      "An anthology of campus stories captured in fragments, rumors, messages, and half-lit conversations after the final bell.",
     banner:
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1800&auto=format&fit=crop",
     cover:
       "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=900&auto=format&fit=crop",
+    trailer:
+      "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1400&auto=format&fit=crop",
     featured: false,
+    published: true,
+    genre: "Drama",
+    year: "2025",
+    rating: "TV-PG",
+    match: "94%",
+    duration: "33m",
+    seasons: 1,
+    views: "943K",
+    heat: 81,
     episodes: [
       {
         id: "ep-3",
         title: "Locker 18",
         description: "One locker. Too many stories.",
+        duration: "33m",
+        rating: "TV-PG",
+        season: 1,
+        progress: 0,
+        thumbnail:
+          "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=900&auto=format&fit=crop",
         videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
       },
     ],
@@ -76,21 +142,136 @@ const initialShows = [
   {
     id: "show-3",
     title: "After Class",
-    description: "Late-night plans, tension, laughs, and hidden problems.",
+    tagline: "The night starts when school ends.",
+    description:
+      "Late-night plans, tense friendships, sharp laughs, and private problems collide in a glossy coming-of-age series.",
     banner:
-      "https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=1800&auto=format&fit=crop",
     cover:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=900&auto=format&fit=crop",
+    trailer:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1400&auto=format&fit=crop",
     featured: false,
+    published: true,
+    genre: "Comedy",
+    year: "2026",
+    rating: "TV-14",
+    match: "91%",
+    duration: "29m",
+    seasons: 1,
+    views: "721K",
+    heat: 76,
     episodes: [
       {
         id: "ep-4",
         title: "Group Chat",
         description: "One message changes the whole night.",
+        duration: "29m",
+        rating: "TV-14",
+        season: 1,
+        progress: 44,
+        thumbnail:
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=900&auto=format&fit=crop",
         videoUrl: "https://www.w3schools.com/html/movie.mp4",
       },
     ],
   },
+  {
+    id: "show-4",
+    title: "Red Signal",
+    tagline: "The broadcast never ended.",
+    description:
+      "A sci-fi thriller about students who discover a coded transmission hiding inside old media lab equipment.",
+    banner:
+      "https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1800&auto=format&fit=crop",
+    cover:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?q=80&w=900&auto=format&fit=crop",
+    trailer:
+      "https://images.unsplash.com/photo-1535223289827-42f1e9919769?q=80&w=1400&auto=format&fit=crop",
+    featured: false,
+    published: true,
+    genre: "Sci-Fi",
+    year: "2026",
+    rating: "TV-14",
+    match: "96%",
+    duration: "48m",
+    seasons: 1,
+    views: "1.2M",
+    heat: 89,
+    episodes: [
+      {
+        id: "ep-5",
+        title: "Static",
+        description: "A corrupted tape points to a room that is not on the school map.",
+        duration: "48m",
+        rating: "TV-14",
+        season: 1,
+        progress: 0,
+        thumbnail:
+          "https://images.unsplash.com/photo-1535223289827-42f1e9919769?q=80&w=900&auto=format&fit=crop",
+        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+      },
+    ],
+  },
+  {
+    id: "show-5",
+    title: "The Final Take",
+    tagline: "One shot. No reset.",
+    description:
+      "A kinetic action drama following a student film crew racing to finish their movie before everything falls apart.",
+    banner:
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1800&auto=format&fit=crop",
+    cover:
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=900&auto=format&fit=crop",
+    trailer:
+      "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=1400&auto=format&fit=crop",
+    featured: false,
+    published: true,
+    genre: "Action",
+    year: "2025",
+    rating: "TV-14",
+    match: "93%",
+    duration: "51m",
+    seasons: 1,
+    views: "864K",
+    heat: 84,
+    episodes: [
+      {
+        id: "ep-6",
+        title: "Rolling",
+        description: "The crew gets one chance to capture the scene that could save the project.",
+        duration: "51m",
+        rating: "TV-14",
+        season: 1,
+        progress: 0,
+        thumbnail:
+          "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=900&auto=format&fit=crop",
+        videoUrl: "https://www.w3schools.com/html/movie.mp4",
+      },
+    ],
+  },
+];
+
+const rowPlan = [
+  { title: "Trending Now", filter: (show) => show.heat > 80 },
+  { title: "Continue Watching", filter: (show) => show.episodes.some((ep) => ep.progress > 0) },
+  { title: "Recently Added", filter: () => true },
+  { title: "SMBA Originals", filter: (show) => show.published },
+  { title: "Action", filter: (show) => show.genre === "Action" },
+  { title: "Drama", filter: (show) => show.genre === "Drama" },
+  { title: "Sci-Fi", filter: (show) => show.genre === "Sci-Fi" },
+  { title: "Recommended For You", filter: (show) => Number(show.match.replace("%", "")) > 90 },
+];
+
+const creatorNav = [
+  ["Dashboard", LayoutDashboard],
+  ["Shows", MonitorPlay],
+  ["Episodes", Film],
+  ["Uploads", UploadCloud],
+  ["Analytics", BarChart3],
+  ["Comments", MessageCircle],
+  ["Users", Users],
+  ["Settings", Settings],
 ];
 
 function IntroAnimation({ onDone }) {
@@ -125,18 +306,14 @@ function LoginScreen({ code, setCode, error, onEnter, onGuest }) {
           <img key={i} src={src} alt="" className={styles.collageImage} />
         ))}
       </div>
-
       <div className={styles.loginOverlay} />
-
       <div className={styles.loginContent}>
         <div className={styles.loginTop}>
           <div className={styles.wordmark}>SMBAFLEX</div>
         </div>
-
         <div className={styles.loginCard}>
           <h1 className={styles.loginTitle}>Sign In</h1>
           <p className={styles.loginSub}>Enter your access code to continue.</p>
-
           <input
             type="password"
             placeholder="Access code"
@@ -145,56 +322,591 @@ function LoginScreen({ code, setCode, error, onEnter, onGuest }) {
             onKeyDown={(e) => e.key === "Enter" && onEnter()}
             className={styles.loginInput}
           />
-
           <button onClick={onEnter} className={styles.loginButton}>
             Sign In
           </button>
-
           <div className={styles.loginDivider}>
             <span />
             <p>OR</p>
             <span />
           </div>
-
           <button onClick={onGuest} className={styles.guestButton}>
-            <User size={18} />
+            <Users size={18} />
             Continue as Guest
           </button>
-
           {error && <p className={styles.loginError}>{error}</p>}
         </div>
       </div>
     </main>
   );
 }
-function ShowCard({ show, active, onSelect }) {
+
+function Navbar({ activeView, setView, mode, query, setQuery, logout, compact }) {
   return (
-    <button
-      className={`${styles.showCard} ${active ? styles.showCardActive : ""}`}
-      onClick={() => onSelect(show.id)}
-    >
-      <img src={show.cover} alt={show.title} className={styles.showCardImage} />
-      <div className={styles.showCardShade} />
-      <div className={styles.showCardInfo}>
-        <h3>{show.title}</h3>
-        <p>{show.episodes.length} episode(s)</p>
+    <header className={`${styles.appHeader} ${compact ? styles.appHeaderCompact : ""}`}>
+      <div className={styles.headerLeft}>
+        <button className={styles.wordmarkSmall} onClick={() => setView("home")}>
+          SMBAFLEX
+        </button>
+        <nav className={styles.navLinks}>
+          {["home", "watch"].map((item) => (
+            <button
+              key={item}
+              className={`${styles.headerLink} ${activeView === item ? styles.headerLinkActive : ""}`}
+              onClick={() => setView(item)}
+            >
+              {item === "home" ? "Home" : "Watch"}
+            </button>
+          ))}
+          {mode === "creator" && (
+            <button
+              className={`${styles.headerLink} ${activeView === "creator" ? styles.headerLinkActive : ""}`}
+              onClick={() => setView("creator")}
+            >
+              Creator
+            </button>
+          )}
+        </nav>
       </div>
-    </button>
+      <div className={styles.headerRight}>
+        <label className={styles.searchBox}>
+          <Search size={17} />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Titles, genres, episodes"
+          />
+        </label>
+        <button className={styles.iconButton} aria-label="Notifications">
+          <Bell size={18} />
+          <span />
+        </button>
+        <button className={styles.profileButton} aria-label="Profile menu">
+          <span>SM</span>
+          <ChevronDown size={16} />
+        </button>
+        <button className={styles.logoutBtn} onClick={logout}>
+          <LogOut size={16} />
+          Exit
+        </button>
+      </div>
+    </header>
   );
 }
 
-function EpisodeCard({ episode, onWatch }) {
+function Hero({ show, onPlay, onInfo, onToggleList, inList }) {
   return (
-    <div className={styles.episodeCard}>
-      <div>
-        <h3 className={styles.episodeTitle}>{episode.title}</h3>
-        <p className={styles.episodeText}>{episode.description}</p>
+    <section className={styles.hero}>
+      <div className={styles.heroMedia} style={{ backgroundImage: `url(${show.banner})` }} />
+      <div className={styles.heroNoise} />
+      <div className={styles.heroOverlay} />
+      <div className={styles.heroContent}>
+        <div className={styles.featuredBadge}>
+          <Sparkles size={15} />
+          Featured SMBA Original
+        </div>
+        <h1 className={styles.heroTitle}>{show.title}</h1>
+        <p className={styles.heroTagline}>{show.tagline}</p>
+        <p className={styles.heroText}>{show.description}</p>
+        <div className={styles.metadata}>
+          <strong>{show.match} Match</strong>
+          <span>{show.year}</span>
+          <span>{show.rating}</span>
+          <span>{show.seasons} Season{show.seasons > 1 ? "s" : ""}</span>
+          <span>{show.duration}</span>
+        </div>
+        <div className={styles.heroActions}>
+          <button className={styles.primaryBtn} onClick={() => onPlay(show)}>
+            <Play size={19} fill="currentColor" />
+            Play
+          </button>
+          <button className={styles.secondaryBtn} onClick={() => onInfo(show)}>
+            <Info size={18} />
+            More Info
+          </button>
+          <button className={styles.glassBtn} onClick={() => onToggleList(show.id)}>
+            {inList ? <Check size={18} /> : <ListPlus size={18} />}
+            {inList ? "In My List" : "Add to List"}
+          </button>
+        </div>
       </div>
-      <button className={styles.primaryBtn} onClick={() => onWatch(episode)}>
-        <Play size={16} />
-        Watch
+      <div className={styles.trailerPreview}>
+        <img src={show.trailer} alt="" />
+        <span>Trailer Preview</span>
+      </div>
+    </section>
+  );
+}
+
+function ContentCard({ show, onPlay, onInfo, onToggleList, inList, progress }) {
+  return (
+    <article className={styles.contentCard}>
+      <button className={styles.posterButton} onClick={() => onPlay(show)}>
+        <img src={show.cover} alt={show.title} />
+        <span className={styles.posterGlow} />
       </button>
+      <div className={styles.cardHover}>
+        <img src={show.trailer} alt="" />
+        <div className={styles.cardShade} />
+        <div className={styles.cardHoverBody}>
+          <div className={styles.cardControls}>
+            <button onClick={() => onPlay(show)} aria-label={`Play ${show.title}`}>
+              <Play size={15} fill="currentColor" />
+            </button>
+            <button onClick={() => onToggleList(show.id)} aria-label="Add to list">
+              {inList ? <Check size={15} /> : <Plus size={15} />}
+            </button>
+            <button onClick={() => onInfo(show)} aria-label="More info">
+              <Info size={15} />
+            </button>
+          </div>
+          <h3>{show.title}</h3>
+          <div className={styles.cardMeta}>
+            <strong>{show.match}</strong>
+            <span>{show.rating}</span>
+            <span>{show.duration}</span>
+          </div>
+          <p>{show.genre} • {show.year}</p>
+          {progress > 0 && (
+            <div className={styles.progressRail}>
+              <span style={{ width: `${progress}%` }} />
+            </div>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ContentRow({ title, shows, onPlay, onInfo, onToggleList, myList, progressMap }) {
+  if (!shows.length) return null;
+
+  return (
+    <section className={styles.contentRow}>
+      <div className={styles.rowHeader}>
+        <h2>{title}</h2>
+        <button>
+          Explore <ChevronRight size={16} />
+        </button>
+      </div>
+      <div className={styles.scroller}>
+        {shows.map((show) => (
+          <ContentCard
+            key={`${title}-${show.id}`}
+            show={show}
+            onPlay={onPlay}
+            onInfo={onInfo}
+            onToggleList={onToggleList}
+            inList={myList.includes(show.id)}
+            progress={progressMap[show.episodes[0]?.id] || show.episodes[0]?.progress || 0}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HomeExperience({
+  shows,
+  featuredShow,
+  myList,
+  progressMap,
+  query,
+  onPlay,
+  onInfo,
+  onToggleList,
+  selectedGenre,
+  setSelectedGenre,
+}) {
+  const genres = ["All", ...Array.from(new Set(shows.map((show) => show.genre)))];
+  const normalized = query.trim().toLowerCase();
+  const filteredShows = shows.filter((show) => {
+    const genreMatch = selectedGenre === "All" || show.genre === selectedGenre;
+    const queryMatch =
+      !normalized ||
+      [show.title, show.description, show.genre, show.tagline].some((item) =>
+        item.toLowerCase().includes(normalized)
+      );
+    return genreMatch && queryMatch;
+  });
+
+  return (
+    <div className={styles.pageFade}>
+      <Hero
+        show={featuredShow}
+        onPlay={onPlay}
+        onInfo={onInfo}
+        onToggleList={onToggleList}
+        inList={myList.includes(featuredShow.id)}
+      />
+      <section className={styles.filterStrip}>
+        <div>
+          <SlidersHorizontal size={18} />
+          <span>Browse by mood</span>
+        </div>
+        {genres.map((genre) => (
+          <button
+            key={genre}
+            className={selectedGenre === genre ? styles.filterActive : ""}
+            onClick={() => setSelectedGenre(genre)}
+          >
+            {genre}
+          </button>
+        ))}
+      </section>
+      {normalized && (
+        <ContentRow
+          title={`Search results for "${query}"`}
+          shows={filteredShows}
+          onPlay={onPlay}
+          onInfo={onInfo}
+          onToggleList={onToggleList}
+          myList={myList}
+          progressMap={progressMap}
+        />
+      )}
+      {myList.length > 0 && (
+        <ContentRow
+          title="My List"
+          shows={shows.filter((show) => myList.includes(show.id))}
+          onPlay={onPlay}
+          onInfo={onInfo}
+          onToggleList={onToggleList}
+          myList={myList}
+          progressMap={progressMap}
+        />
+      )}
+      {rowPlan.map((row) => (
+        <ContentRow
+          key={row.title}
+          title={row.title}
+          shows={filteredShows.filter(row.filter)}
+          onPlay={onPlay}
+          onInfo={onInfo}
+          onToggleList={onToggleList}
+          myList={myList}
+          progressMap={progressMap}
+        />
+      ))}
     </div>
+  );
+}
+
+function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked, disliked, progressMap }) {
+  const [playing, setPlaying] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const [speed, setSpeed] = useState("1x");
+  const [subtitles, setSubtitles] = useState(false);
+  const playerRef = useRef(null);
+  const activeProgress = progressMap[episode?.id] || episode?.progress || 0;
+
+  useEffect(() => {
+    setControlsVisible(true);
+    const timer = setTimeout(() => setControlsVisible(false), 2600);
+    return () => clearTimeout(timer);
+  }, [episode, playing]);
+
+  if (!show || !episode) return null;
+
+  return (
+    <section className={`${styles.watchPage} ${styles.pageFade}`}>
+      <div className={styles.ambientGlow} style={{ backgroundImage: `url(${show.banner})` }} />
+      <div className={styles.watchGrid}>
+        <div className={styles.playerShell} onMouseMove={() => setControlsVisible(true)}>
+          <video
+            ref={playerRef}
+            className={styles.videoPlayer}
+            src={episode.videoUrl}
+            poster={episode.thumbnail}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            onTimeUpdate={(event) => {
+              const video = event.currentTarget;
+              if (video.duration) {
+                localStorage.setItem(
+                  "smbaflex-progress",
+                  JSON.stringify({
+                    ...progressMap,
+                    [episode.id]: Math.round((video.currentTime / video.duration) * 100),
+                  })
+                );
+              }
+            }}
+          />
+          <button className={styles.skipIntro}>Skip Intro</button>
+          <div className={`${styles.customControls} ${controlsVisible ? styles.controlsVisible : ""}`}>
+            <div className={styles.progressRail}>
+              <span style={{ width: `${activeProgress}%` }} />
+            </div>
+            <div className={styles.controlsRow}>
+              <button
+                onClick={() => {
+                  if (!playerRef.current) return;
+                  if (playerRef.current.paused) playerRef.current.play();
+                  else playerRef.current.pause();
+                }}
+              >
+                {playing ? <Pause size={19} /> : <Play size={19} fill="currentColor" />}
+              </button>
+              <button>
+                <Volume2 size={19} />
+              </button>
+              <strong>{show.title}</strong>
+              <span>{episode.title}</span>
+              <button onClick={() => setSubtitles((value) => !value)}>
+                CC {subtitles ? "On" : "Off"}
+              </button>
+              <button onClick={() => setSpeed(speed === "1x" ? "1.5x" : speed === "1.5x" ? "2x" : "1x")}>
+                {speed}
+              </button>
+              <button onClick={() => onSelectEpisode(show.episodes[(show.episodes.indexOf(episode) + 1) % show.episodes.length])}>
+                <SkipForward size={19} />
+              </button>
+            </div>
+          </div>
+        </div>
+        <aside className={styles.episodeSidebar}>
+          <div className={styles.sidebarTop}>
+            <button className={styles.backBtn} onClick={onBack}>
+              <X size={17} /> Close
+            </button>
+            <label>
+              Season
+              <select defaultValue="1">
+                <option>1</option>
+                {show.seasons > 1 && <option>2</option>}
+              </select>
+            </label>
+          </div>
+          <h1>{episode.title}</h1>
+          <p>{episode.description}</p>
+          <div className={styles.reactionRow}>
+            <button className={liked ? styles.reactionActive : ""} onClick={() => onLike(show.id, "like")}>
+              <ThumbsUp size={17} /> Like
+            </button>
+            <button className={disliked ? styles.reactionActive : ""} onClick={() => onLike(show.id, "dislike")}>
+              <ThumbsDown size={17} /> Not for me
+            </button>
+          </div>
+          <div className={styles.episodeListPremium}>
+            {show.episodes.map((item, index) => (
+              <button
+                key={item.id}
+                className={item.id === episode.id ? styles.episodeActive : ""}
+                onClick={() => onSelectEpisode(item)}
+              >
+                <img src={item.thumbnail} alt="" />
+                <span>{index + 1}</span>
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.duration} • {item.rating}</p>
+                  <div className={styles.progressRail}>
+                    <span style={{ width: `${progressMap[item.id] || item.progress || 0}%` }} />
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function CreatorDashboard({
+  shows,
+  selectedShow,
+  setSelectedShowId,
+  addShow,
+  addEpisode,
+  deleteCurrentShow,
+  makeFeatured,
+  form,
+  setForm,
+}) {
+  const [creatorView, setCreatorView] = useState("Dashboard");
+  const totalEpisodes = shows.reduce((sum, show) => sum + show.episodes.length, 0);
+
+  return (
+    <section className={`${styles.creatorStudio} ${styles.pageFade}`}>
+      <aside className={styles.creatorSidebar}>
+        <div className={styles.creatorBrand}>
+          <Wand2 size={20} />
+          Creator Studio
+        </div>
+        {creatorNav.map(([item, Icon]) => (
+          <button
+            key={item}
+            className={creatorView === item ? styles.creatorNavActive : ""}
+            onClick={() => setCreatorView(item)}
+          >
+            <Icon size={18} />
+            {item}
+          </button>
+        ))}
+      </aside>
+      <div className={styles.creatorMain}>
+        <div className={styles.creatorHero}>
+          <div>
+            <p>SMBAFLEX Command Center</p>
+            <h1>{creatorView}</h1>
+          </div>
+          <button className={styles.primaryBtn}>
+            <UploadCloud size={18} />
+            New Upload
+          </button>
+        </div>
+        <div className={styles.analyticsGrid}>
+          {[
+            ["Total Views", "4.7M", Eye],
+            ["Watch Time", "128K hrs", Clock3],
+            ["Subscribers", "42.8K", Users],
+            ["Trending Score", "94%", Gauge],
+          ].map(([label, value, Icon]) => (
+            <article key={label} className={styles.analyticsCard}>
+              <Icon size={21} />
+              <span>{label}</span>
+              <strong>{value}</strong>
+              <div className={styles.miniChart}><span /><span /><span /><span /><span /></div>
+            </article>
+          ))}
+        </div>
+        <div className={styles.creatorGrid}>
+          <article className={styles.creatorPanel}>
+            <h2>Create Show</h2>
+            <input
+              className={styles.creatorInput}
+              placeholder="Show title"
+              value={form.showTitle}
+              onChange={(e) => setForm((prev) => ({ ...prev, showTitle: e.target.value }))}
+            />
+            <textarea
+              className={styles.creatorTextarea}
+              placeholder="Show description"
+              value={form.showDescription}
+              onChange={(e) => setForm((prev) => ({ ...prev, showDescription: e.target.value }))}
+            />
+            <input
+              className={styles.creatorInput}
+              placeholder="Cover image URL or uploaded asset"
+              value={form.showCover}
+              onChange={(e) => setForm((prev) => ({ ...prev, showCover: e.target.value }))}
+            />
+            <input
+              className={styles.creatorInput}
+              placeholder="Banner image URL or uploaded asset"
+              value={form.showBanner}
+              onChange={(e) => setForm((prev) => ({ ...prev, showBanner: e.target.value }))}
+            />
+            <div className={styles.switchRow}>
+              <span>Publish immediately</span>
+              <button><Check size={15} /> Published</button>
+            </div>
+            <button className={styles.primaryBtn} onClick={addShow}>
+              <Plus size={17} />
+              Create Show
+            </button>
+          </article>
+          <article className={styles.creatorPanel}>
+            <h2>Upload Center</h2>
+            <div className={styles.dropZone}>
+              <UploadCloud size={32} />
+              <strong>Drag video, trailer, cover, or subtitles</strong>
+              <p>MP4 links, subtitle files, thumbnails, and banners are supported.</p>
+              <div><span /></div>
+            </div>
+            <input
+              className={styles.creatorInput}
+              placeholder="Direct MP4 link"
+              value={form.episodeUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, episodeUrl: e.target.value }))}
+            />
+            <input
+              className={styles.creatorInput}
+              placeholder="Trailer link"
+              value={form.trailerUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, trailerUrl: e.target.value }))}
+            />
+          </article>
+          <article className={styles.creatorPanel}>
+            <h2>Content Manager</h2>
+            <div className={styles.managerList}>
+              {shows.map((show) => (
+                <button
+                  key={show.id}
+                  className={show.id === selectedShow.id ? styles.managerActive : ""}
+                  onClick={() => setSelectedShowId(show.id)}
+                >
+                  <img src={show.cover} alt="" />
+                  <div>
+                    <strong>{show.title}</strong>
+                    <p>{show.episodes.length} episodes • {show.published ? "Published" : "Draft"}</p>
+                  </div>
+                  {show.featured && <Star size={16} fill="currentColor" />}
+                </button>
+              ))}
+            </div>
+            <div className={styles.creatorButtonRow}>
+              <button className={styles.secondaryBtn} onClick={() => makeFeatured(selectedShow.id)}>
+                <Star size={16} />
+                Mark Featured
+              </button>
+              <button className={styles.deleteBtn} onClick={deleteCurrentShow}>
+                <Trash2 size={16} />
+                Delete
+              </button>
+            </div>
+          </article>
+          <article className={styles.creatorPanel}>
+            <h2>Episode Metadata</h2>
+            <input
+              className={styles.creatorInput}
+              placeholder="Episode title"
+              value={form.episodeTitle}
+              onChange={(e) => setForm((prev) => ({ ...prev, episodeTitle: e.target.value }))}
+            />
+            <textarea
+              className={styles.creatorTextarea}
+              placeholder="Episode description"
+              value={form.episodeDescription}
+              onChange={(e) => setForm((prev) => ({ ...prev, episodeDescription: e.target.value }))}
+            />
+            <input
+              className={styles.creatorInput}
+              placeholder="Thumbnail URL"
+              value={form.thumbnailUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, thumbnailUrl: e.target.value }))}
+            />
+            <div className={styles.orderList}>
+              {selectedShow.episodes.map((episode, index) => (
+                <div key={episode.id}>
+                  <span>{index + 1}</span>
+                  <p>{episode.title}</p>
+                  <ChevronDown size={16} />
+                </div>
+              ))}
+            </div>
+            <button className={styles.primaryBtn} onClick={addEpisode}>
+              <Plus size={17} />
+              Add Episode
+            </button>
+          </article>
+        </div>
+        <div className={styles.trendPanel}>
+          <h2>Trending Content</h2>
+          <div className={styles.trendBars}>
+            {shows.map((show) => (
+              <div key={show.id}>
+                <span>{show.title}</span>
+                <strong>{show.views}</strong>
+                <div><span style={{ width: `${show.heat}%` }} /></div>
+              </div>
+            ))}
+          </div>
+          <p>{totalEpisodes} episodes currently available across {shows.length} managed shows.</p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -203,20 +915,39 @@ export default function Home() {
   const [error, setError] = useState("");
   const [mode, setMode] = useState(null);
   const [showIntro, setShowIntro] = useState(false);
-
   const [view, setView] = useState("home");
   const [shows, setShows] = useState(initialShows);
   const [selectedShowId, setSelectedShowId] = useState(initialShows[0].id);
   const [selectedEpisode, setSelectedEpisode] = useState(initialShows[0].episodes[0]);
+  const [query, setQuery] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("All");
+  const [myList, setMyList] = useState([]);
+  const [reactions, setReactions] = useState({});
+  const [progressMap, setProgressMap] = useState({});
+  const [compactNav, setCompactNav] = useState(false);
+  const [form, setForm] = useState({
+    showTitle: "",
+    showDescription: "",
+    showCover: "",
+    showBanner: "",
+    episodeTitle: "",
+    episodeDescription: "",
+    episodeUrl: "",
+    thumbnailUrl: "",
+    trailerUrl: "",
+  });
 
-  const [newShowTitle, setNewShowTitle] = useState("");
-  const [newShowDescription, setNewShowDescription] = useState("");
-  const [newShowCover, setNewShowCover] = useState("");
-  const [newShowBanner, setNewShowBanner] = useState("");
+  useEffect(() => {
+    setMyList(JSON.parse(localStorage.getItem("smbaflex-list") || "[]"));
+    setReactions(JSON.parse(localStorage.getItem("smbaflex-reactions") || "{}"));
+    setProgressMap(JSON.parse(localStorage.getItem("smbaflex-progress") || "{}"));
+  }, []);
 
-  const [newEpisodeTitle, setNewEpisodeTitle] = useState("");
-  const [newEpisodeDescription, setNewEpisodeDescription] = useState("");
-  const [newEpisodeUrl, setNewEpisodeUrl] = useState("");
+  useEffect(() => {
+    const onScroll = () => setCompactNav(window.scrollY > 48);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const selectedShow = useMemo(
     () => shows.find((show) => show.id === selectedShowId) || shows[0],
@@ -235,14 +966,12 @@ export default function Home() {
       setShowIntro(true);
       return;
     }
-
     if (enteredCode === VIEWER_CODE) {
       setMode("viewer");
       setError("");
       setShowIntro(true);
       return;
     }
-
     setError("Incorrect access code");
   };
 
@@ -260,58 +989,89 @@ export default function Home() {
     setView("home");
   };
 
-  const watchEpisode = (episode) => {
+  const playShow = (show) => {
+    const episode = show.episodes[0];
+    setSelectedShowId(show.id);
     setSelectedEpisode(episode);
+    setProgressMap((prev) => {
+      const next = { ...prev, [episode.id]: prev[episode.id] || episode.progress || 3 };
+      localStorage.setItem("smbaflex-progress", JSON.stringify(next));
+      return next;
+    });
     setView("watch");
   };
 
-  const addShow = () => {
-    if (!newShowTitle.trim()) return;
+  const toggleList = (id) => {
+    setMyList((prev) => {
+      const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
+      localStorage.setItem("smbaflex-list", JSON.stringify(next));
+      return next;
+    });
+  };
 
+  const toggleReaction = (id, type) => {
+    setReactions((prev) => {
+      const next = { ...prev, [id]: prev[id] === type ? null : type };
+      localStorage.setItem("smbaflex-reactions", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const addShow = () => {
+    if (!form.showTitle.trim()) return;
     const show = {
       id: `show-${Date.now()}`,
-      title: newShowTitle,
-      description: newShowDescription || "New series on SMBAFLEX.",
+      title: form.showTitle,
+      tagline: "New on SMBAFLEX.",
+      description: form.showDescription || "A new cinematic series on SMBAFLEX.",
       cover:
-        newShowCover ||
+        form.showCover ||
         "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=900&auto=format&fit=crop",
       banner:
-        newShowBanner ||
-        newShowCover ||
-        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1600&auto=format&fit=crop",
+        form.showBanner ||
+        form.showCover ||
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1800&auto=format&fit=crop",
+      trailer:
+        form.showBanner ||
+        "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1400&auto=format&fit=crop",
       featured: false,
+      published: true,
+      genre: "Drama",
+      year: "2026",
+      rating: "TV-14",
+      match: "89%",
+      duration: "36m",
+      seasons: 1,
+      views: "0",
+      heat: 42,
       episodes: [],
     };
-
     setShows((prev) => [...prev, show]);
     setSelectedShowId(show.id);
-    setNewShowTitle("");
-    setNewShowDescription("");
-    setNewShowCover("");
-    setNewShowBanner("");
+    setForm((prev) => ({ ...prev, showTitle: "", showDescription: "", showCover: "", showBanner: "" }));
   };
 
   const addEpisode = () => {
-    if (!newEpisodeTitle.trim() || !newEpisodeUrl.trim()) return;
-
+    if (!form.episodeTitle.trim()) return;
     const episode = {
       id: `ep-${Date.now()}`,
-      title: newEpisodeTitle,
-      description: newEpisodeDescription || "New episode.",
-      videoUrl: newEpisodeUrl,
+      title: form.episodeTitle,
+      description: form.episodeDescription || "New episode.",
+      duration: "35m",
+      rating: "TV-14",
+      season: 1,
+      progress: 0,
+      thumbnail:
+        form.thumbnailUrl ||
+        "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=900&auto=format&fit=crop",
+      videoUrl: form.episodeUrl || "https://www.w3schools.com/html/mov_bbb.mp4",
     };
-
     setShows((prev) =>
       prev.map((show) =>
-        show.id === selectedShowId
-          ? { ...show, episodes: [...show.episodes, episode] }
-          : show
+        show.id === selectedShowId ? { ...show, episodes: [...show.episodes, episode] } : show
       )
     );
-
-    setNewEpisodeTitle("");
-    setNewEpisodeDescription("");
-    setNewEpisodeUrl("");
+    setForm((prev) => ({ ...prev, episodeTitle: "", episodeDescription: "", episodeUrl: "", thumbnailUrl: "" }));
   };
 
   const deleteCurrentShow = () => {
@@ -319,16 +1079,11 @@ export default function Home() {
     const nextShows = shows.filter((show) => show.id !== selectedShowId);
     setShows(nextShows);
     setSelectedShowId(nextShows[0].id);
-    setSelectedEpisode(nextShows[0].episodes[0] || null);
+    setSelectedEpisode(nextShows[0].episodes[0]);
   };
 
   const makeFeatured = (id) => {
-    setShows((prev) =>
-      prev.map((show) => ({
-        ...show,
-        featured: show.id === id,
-      }))
-    );
+    setShows((prev) => prev.map((show) => ({ ...show, featured: show.id === id })));
   };
 
   if (!mode) {
@@ -343,221 +1098,62 @@ export default function Home() {
     );
   }
 
-  if (showIntro) {
-    return <IntroAnimation onDone={() => setShowIntro(false)} />;
-  }
+  if (showIntro) return <IntroAnimation onDone={() => setShowIntro(false)} />;
 
   return (
     <main className={styles.appPage}>
-      <header className={styles.appHeader}>
-        <div className={styles.headerLeft}>
-          <div className={styles.wordmarkSmall}>SMBAFLEX</div>
-          <button className={styles.headerLink} onClick={() => setView("home")}>
-            Home
-          </button>
-          <button className={styles.headerLink} onClick={() => setView("watch")}>
-            Watch
-          </button>
-          {mode === "creator" && (
-            <button className={styles.headerLink} onClick={() => setView("creator")}>
-              Creator
-            </button>
-          )}
-        </div>
-
-        <div className={styles.headerRight}>
-          <div className={styles.searchBox}>
-            <Search size={16} />
-            <span>Search</span>
-          </div>
-          <button className={styles.logoutBtn} onClick={logout}>
-            <LogOut size={16} />
-            Exit
-          </button>
-        </div>
-      </header>
-            {view === "home" && (
-        <>
-          <section
-            className={styles.hero}
-            style={{ backgroundImage: `url(${featuredShow.banner})` }}
-          >
-            <div className={styles.heroOverlay} />
-            <div className={styles.heroContent}>
-              <p className={styles.heroTag}>
-                {mode === "creator" ? "Creator Preview" : "Featured Series"}
-              </p>
-              <h1 className={styles.heroTitle}>{featuredShow.title}</h1>
-              <p className={styles.heroText}>{featuredShow.description}</p>
-              <div className={styles.heroActions}>
-                <button
-                  className={styles.primaryBtn}
-                  onClick={() => {
-                    setSelectedShowId(featuredShow.id);
-                    setSelectedEpisode(featuredShow.episodes[0]);
-                    setView("watch");
-                  }}
-                >
-                  <Play size={16} />
-                  Play
-                </button>
-
-                <button
-                  className={styles.secondaryBtn}
-                  onClick={() => setSelectedShowId(featuredShow.id)}
-                >
-                  <Film size={16} />
-                  Details
-                </button>
-
-                {mode === "creator" && (
-                  <button className={styles.secondaryBtn} onClick={() => setView("creator")}>
-                    <Edit3 size={16} />
-                    Creator Tools
-                  </button>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className={styles.rowSection}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Watch Now</h2>
-              <button className={styles.moreBtn}>
-                Explore <ChevronRight size={16} />
-              </button>
-            </div>
-
-            <div className={styles.cardRow}>
-              {shows.map((show) => (
-                <ShowCard
-                  key={show.id}
-                  show={show}
-                  active={show.id === selectedShowId}
-                  onSelect={setSelectedShowId}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section className={styles.rowSection}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>{selectedShow.title} Episodes</h2>
-            </div>
-
-            <div className={styles.episodeList}>
-              {selectedShow.episodes.map((ep) => (
-                <EpisodeCard key={ep.id} episode={ep} onWatch={watchEpisode} />
-              ))}
-            </div>
-          </section>
-        </>
+      <div className={styles.appGrain} />
+      <Navbar
+        activeView={view}
+        setView={setView}
+        mode={mode}
+        query={query}
+        setQuery={setQuery}
+        logout={logout}
+        compact={compactNav}
+      />
+      {view === "home" && (
+        <HomeExperience
+          shows={shows}
+          featuredShow={featuredShow}
+          myList={myList}
+          progressMap={progressMap}
+          query={query}
+          onPlay={playShow}
+          onInfo={(show) => {
+            setSelectedShowId(show.id);
+            setSelectedEpisode(show.episodes[0]);
+            setView("watch");
+          }}
+          onToggleList={toggleList}
+          selectedGenre={selectedGenre}
+          setSelectedGenre={setSelectedGenre}
+        />
       )}
-
-      {view === "watch" && selectedEpisode && (
-        <section className={styles.watchWrap}>
-          <div className={styles.watchCard}>
-            <video className={styles.videoPlayer} controls src={selectedEpisode.videoUrl} />
-            <div className={styles.watchInfo}>
-              <h2>{selectedEpisode.title}</h2>
-              <p>{selectedEpisode.description}</p>
-
-              <div className={styles.watchActions}>
-                <button className={styles.secondaryBtn} onClick={() => setView("home")}>
-                  Back Home
-                </button>
-              </div>
-
-              <div className={styles.episodeList}>
-                {selectedShow.episodes
-                  .filter((ep) => ep.id !== selectedEpisode.id)
-                  .map((ep) => (
-                    <EpisodeCard key={ep.id} episode={ep} onWatch={watchEpisode} />
-                  ))}
-              </div>
-            </div>
-          </div>
-        </section>
+      {view === "watch" && (
+        <WatchExperience
+          show={selectedShow}
+          episode={selectedEpisode}
+          onSelectEpisode={setSelectedEpisode}
+          onBack={() => setView("home")}
+          onLike={toggleReaction}
+          liked={reactions[selectedShow.id] === "like"}
+          disliked={reactions[selectedShow.id] === "dislike"}
+          progressMap={progressMap}
+        />
       )}
-
       {view === "creator" && mode === "creator" && (
-        <section className={styles.creatorWrap}>
-          <div className={styles.creatorGrid}>
-            <div className={styles.creatorCard}>
-              <h2 className={styles.sectionTitle}>Add Show</h2>
-              <input
-                className={styles.creatorInput}
-                placeholder="Show title"
-                value={newShowTitle}
-                onChange={(e) => setNewShowTitle(e.target.value)}
-              />
-              <textarea
-                className={styles.creatorTextarea}
-                placeholder="Show description"
-                value={newShowDescription}
-                onChange={(e) => setNewShowDescription(e.target.value)}
-              />
-              <input
-                className={styles.creatorInput}
-                placeholder="Cover image URL"
-                value={newShowCover}
-                onChange={(e) => setNewShowCover(e.target.value)}
-              />
-              <input
-                className={styles.creatorInput}
-                placeholder="Banner image URL"
-                value={newShowBanner}
-                onChange={(e) => setNewShowBanner(e.target.value)}
-              />
-              <button className={styles.primaryBtn} onClick={addShow}>
-                <Plus size={16} />
-                Add Show
-              </button>
-            </div>
-
-            <div className={styles.creatorCard}>
-              <h2 className={styles.sectionTitle}>Manage Show</h2>
-              <p className={styles.creatorText}>Current: {selectedShow.title}</p>
-
-              <div className={styles.creatorButtonRow}>
-                <button className={styles.secondaryBtn} onClick={() => makeFeatured(selectedShow.id)}>
-                  <Tv size={16} />
-                  Set Featured
-                </button>
-                <button className={styles.deleteBtn} onClick={deleteCurrentShow}>
-                  <Trash2 size={16} />
-                  Delete Show
-                </button>
-              </div>
-
-              <hr className={styles.divider} />
-
-              <h3 className={styles.subTitle}>Add Episode</h3>
-              <input
-                className={styles.creatorInput}
-                placeholder="Episode title"
-                value={newEpisodeTitle}
-                onChange={(e) => setNewEpisodeTitle(e.target.value)}
-              />
-              <textarea
-                className={styles.creatorTextarea}
-                placeholder="Episode description"
-                value={newEpisodeDescription}
-                onChange={(e) => setNewEpisodeDescription(e.target.value)}
-              />
-              <input
-                className={styles.creatorInput}
-                placeholder="Direct video URL"
-                value={newEpisodeUrl}
-                onChange={(e) => setNewEpisodeUrl(e.target.value)}
-              />
-              <button className={styles.primaryBtn} onClick={addEpisode}>
-                <Plus size={16} />
-                Add Episode
-              </button>
-            </div>
-          </div>
-        </section>
+        <CreatorDashboard
+          shows={shows}
+          selectedShow={selectedShow}
+          setSelectedShowId={setSelectedShowId}
+          addShow={addShow}
+          addEpisode={addEpisode}
+          deleteCurrentShow={deleteCurrentShow}
+          makeFeatured={makeFeatured}
+          form={form}
+          setForm={setForm}
+        />
       )}
     </main>
   );
