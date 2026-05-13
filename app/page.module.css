@@ -203,7 +203,7 @@
   flex: 1;
   background: linear-gradient(to bottom, #2a0000, #ff0015, #2a0000);
   box-shadow: 0 0 20px rgba(229, 9, 20, 0.45);
-  animation: streak 1.8s ease-in-out infinite alternate;
+  animation: streak 2.4s ease-in-out infinite alternate;
 }
 
 .introBars span:nth-child(2) { animation-delay: 0.1s; }
@@ -228,7 +228,7 @@
   inset: -20%;
   background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.14) 50%, transparent 60%);
   transform: translateX(-100%);
-  animation: sweep 2.1s ease forwards;
+  animation: sweep 2.8s ease forwards;
 }
 
 @keyframes streak {
@@ -757,8 +757,30 @@
 .posterGlow {
   position: absolute;
   inset: auto 0 0;
-  height: 46%;
+  height: 58%;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.posterInfo {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 4px;
+  color: white;
+  text-align: left;
+  z-index: 2;
+}
+
+.posterInfo strong {
+  font-size: 17px;
+  line-height: 1.1;
+}
+
+.posterInfo small {
+  color: #cfd0d5;
+  font-weight: 800;
 }
 
 .cardHover {
@@ -992,6 +1014,27 @@
   line-height: 1.55;
 }
 
+.watchMetadata {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.watchMetadata span {
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #e6e6ea;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .reactionRow {
   gap: 10px;
   margin: 18px 0;
@@ -1015,7 +1058,7 @@
 
 .episodeListPremium button {
   display: grid;
-  grid-template-columns: 108px 20px 1fr;
+  grid-template-columns: 108px 54px 1fr;
   gap: 12px;
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1025,6 +1068,17 @@
   color: white;
   text-align: left;
   cursor: pointer;
+}
+
+.episodeListPremium small {
+  display: -webkit-box;
+  color: #9d9ea6;
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
 }
 
 .episodeListPremium img {
@@ -1117,6 +1171,27 @@
   font-size: clamp(40px, 6vw, 76px);
 }
 
+.notice {
+  margin: 18px 0 0;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  border-radius: 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(72, 255, 155, 0.26);
+  background: linear-gradient(135deg, rgba(72, 255, 155, 0.14), rgba(255, 255, 255, 0.04));
+  color: #dfffea;
+  font-weight: 900;
+  box-shadow: 0 16px 46px rgba(0, 0, 0, 0.22);
+  animation: pageIn 0.28s ease both;
+}
+
+.noticeError {
+  border-color: rgba(255, 103, 112, 0.4);
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(255, 255, 255, 0.04));
+  color: #ffe5e7;
+}
+
 .analyticsGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1172,8 +1247,31 @@
 }
 
 .creatorPanel h2,
-.trendPanel h2 {
+.trendPanel h2,
+.episodeManagerPanel h2 {
   margin: 0 0 16px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.panelHeader span {
+  display: block;
+  margin-bottom: 5px;
+  color: #ff8b93;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.panelHeader h2 {
+  margin: 0;
 }
 
 .creatorInput,
@@ -1288,6 +1386,30 @@
   border-color: rgba(229, 9, 20, 0.72) !important;
 }
 
+.statusPublished,
+.statusDraft {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 999px;
+  padding: 7px 9px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.statusPublished {
+  background: rgba(72, 255, 155, 0.12);
+  color: #9fffc5;
+  border: 1px solid rgba(72, 255, 155, 0.22);
+}
+
+.statusDraft {
+  background: rgba(255, 255, 255, 0.08);
+  color: #c7c8ce;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .creatorButtonRow {
   margin-top: 16px;
 }
@@ -1296,19 +1418,93 @@
   margin-bottom: 16px;
 }
 
-.orderList div {
+.orderList div,
+.orderList button {
   display: grid;
   grid-template-columns: 24px 1fr 20px;
   align-items: center;
   gap: 10px;
   min-height: 42px;
   padding: 0 10px;
+  border: 0;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
+  color: white;
+  text-align: left;
 }
 
 .orderList p {
   margin: 0;
+}
+
+.episodeManagerPanel {
+  margin-top: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(22px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  border-radius: 22px;
+  padding: 20px;
+}
+
+.episodeManageCard {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  border-radius: 18px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.episodeManageCard img {
+  width: 180px;
+  height: 104px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.episodeManageCard p {
+  color: #c8c8ce;
+  line-height: 1.5;
+  margin: 6px 0;
+}
+
+.emptyState,
+.emptyMini {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+  color: #e7e7ec;
+}
+
+.emptyState {
+  width: min(720px, calc(100% - 40px));
+  min-height: 320px;
+  margin: 130px auto 50px;
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+}
+
+.emptyState h2 {
+  margin: 12px 0 6px;
+  font-size: 32px;
+}
+
+.emptyState p,
+.emptyMini p {
+  margin: 0;
+  color: #bfc0c7;
+}
+
+.emptyMini {
+  min-height: 112px;
+  border-radius: 16px;
+  padding: 18px;
 }
 
 .trendPanel {

@@ -11,7 +11,6 @@ import {
   Eye,
   Film,
   Gauge,
-  Heart,
   Info,
   LayoutDashboard,
   ListPlus,
@@ -40,6 +39,10 @@ import styles from "./page.module.css";
 
 const VIEWER_CODE = "password";
 const CREATOR_CODE = "smba";
+const SHOWS_STORAGE_KEY = "smbaflex-shows";
+const LIST_STORAGE_KEY = "smbaflex-list";
+const REACTIONS_STORAGE_KEY = "smbaflex-reactions";
+const PROGRESS_STORAGE_KEY = "smbaflex-progress";
 
 const collageImages = [
   "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1200&auto=format&fit=crop",
@@ -253,6 +256,7 @@ const initialShows = [
 ];
 
 const rowPlan = [
+  { title: "Featured", filter: (show) => show.featured },
   { title: "Trending Now", filter: (show) => show.heat > 80 },
   { title: "Continue Watching", filter: (show) => show.episodes.some((ep) => ep.progress > 0) },
   { title: "Recently Added", filter: () => true },
@@ -261,6 +265,7 @@ const rowPlan = [
   { title: "Drama", filter: (show) => show.genre === "Drama" },
   { title: "Sci-Fi", filter: (show) => show.genre === "Sci-Fi" },
   { title: "Recommended For You", filter: (show) => Number(show.match.replace("%", "")) > 90 },
+  { title: "All Shows", filter: () => true },
 ];
 
 const creatorNav = [
@@ -276,7 +281,7 @@ const creatorNav = [
 
 function IntroAnimation({ onDone }) {
   useEffect(() => {
-    const timer = setTimeout(onDone, 3400);
+    const timer = setTimeout(onDone, 4200);
     return () => clearTimeout(timer);
   }, [onDone]);
 
@@ -439,11 +444,17 @@ function Hero({ show, onPlay, onInfo, onToggleList, inList }) {
 }
 
 function ContentCard({ show, onPlay, onInfo, onToggleList, inList, progress }) {
+  const episodeCount = show.episodes.length;
+
   return (
     <article className={styles.contentCard}>
       <button className={styles.posterButton} onClick={() => onPlay(show)}>
         <img src={show.cover} alt={show.title} />
         <span className={styles.posterGlow} />
+        <span className={styles.posterInfo}>
+          <strong>{show.title}</strong>
+          <small>{episodeCount} episode{episodeCount === 1 ? "" : "s"}</small>
+        </span>
       </button>
       <div className={styles.cardHover}>
         <img src={show.trailer} alt="" />
@@ -466,7 +477,7 @@ function ContentCard({ show, onPlay, onInfo, onToggleList, inList, progress }) {
             <span>{show.rating}</span>
             <span>{show.duration}</span>
           </div>
-          <p>{show.genre} • {show.year}</p>
+          <p>{show.genre} • {show.year} • {episodeCount} episode{episodeCount === 1 ? "" : "s"}</p>
           {progress > 0 && (
             <div className={styles.progressRail}>
               <span style={{ width: `${progress}%` }} />
@@ -565,6 +576,13 @@ function HomeExperience({
           progressMap={progressMap}
         />
       )}
+      {normalized && filteredShows.length === 0 && (
+        <div className={styles.emptyState}>
+          <Search size={28} />
+          <h2>No titles found</h2>
+          <p>Try another title, genre, or episode keyword.</p>
+        </div>
+      )}
       {myList.length > 0 && (
         <ContentRow
           title="My List"
@@ -592,7 +610,7 @@ function HomeExperience({
   );
 }
 
-function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked, disliked, progressMap }) {
+function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked, disliked, progressMap, setProgressMap }) {
   const [playing, setPlaying] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
   const [speed, setSpeed] = useState("1x");
@@ -606,7 +624,23 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
     return () => clearTimeout(timer);
   }, [episode, playing]);
 
-  if (!show || !episode) return null;
+  if (!show || !episode) {
+    return (
+      <section className={`${styles.watchPage} ${styles.pageFade}`}>
+        <div className={styles.emptyState}>
+          <Film size={34} />
+          <h2>No episode available</h2>
+          <p>This show does not have a playable episode yet.</p>
+          <button className={styles.primaryBtn} onClick={onBack}>
+            Back to Home
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  const activeIndex = show.episodes.findIndex((item) => item.id === episode.id);
+  const nextEpisode = show.episodes[(activeIndex + 1) % show.episodes.length];
 
   return (
     <section className={`${styles.watchPage} ${styles.pageFade}`}>
@@ -623,13 +657,12 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
             onTimeUpdate={(event) => {
               const video = event.currentTarget;
               if (video.duration) {
-                localStorage.setItem(
-                  "smbaflex-progress",
-                  JSON.stringify({
-                    ...progressMap,
-                    [episode.id]: Math.round((video.currentTime / video.duration) * 100),
-                  })
-                );
+                const percent = Math.round((video.currentTime / video.duration) * 100);
+                setProgressMap((prev) => {
+                  const next = { ...prev, [episode.id]: percent };
+                  localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
+                  return next;
+                });
               }
             }}
           />
@@ -659,7 +692,7 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
               <button onClick={() => setSpeed(speed === "1x" ? "1.5x" : speed === "1.5x" ? "2x" : "1x")}>
                 {speed}
               </button>
-              <button onClick={() => onSelectEpisode(show.episodes[(show.episodes.indexOf(episode) + 1) % show.episodes.length])}>
+              <button onClick={() => onSelectEpisode(nextEpisode)}>
                 <SkipForward size={19} />
               </button>
             </div>
@@ -668,7 +701,7 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
         <aside className={styles.episodeSidebar}>
           <div className={styles.sidebarTop}>
             <button className={styles.backBtn} onClick={onBack}>
-              <X size={17} /> Close
+              <X size={17} /> Back to Home
             </button>
             <label>
               Season
@@ -679,6 +712,12 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
             </label>
           </div>
           <h1>{episode.title}</h1>
+          <div className={styles.watchMetadata}>
+            <span>{show.title}</span>
+            <span>S{episode.season || 1}:E{activeIndex + 1}</span>
+            <span>{episode.duration}</span>
+            <span>{episode.rating}</span>
+          </div>
           <p>{episode.description}</p>
           <div className={styles.reactionRow}>
             <button className={liked ? styles.reactionActive : ""} onClick={() => onLike(show.id, "like")}>
@@ -696,10 +735,11 @@ function WatchExperience({ show, episode, onSelectEpisode, onBack, onLike, liked
                 onClick={() => onSelectEpisode(item)}
               >
                 <img src={item.thumbnail} alt="" />
-                <span>{index + 1}</span>
+                <span>S{item.season || 1}:E{index + 1}</span>
                 <div>
                   <strong>{item.title}</strong>
                   <p>{item.duration} • {item.rating}</p>
+                  <small>{item.description}</small>
                   <div className={styles.progressRail}>
                     <span style={{ width: `${progressMap[item.id] || item.progress || 0}%` }} />
                   </div>
@@ -721,6 +761,11 @@ function CreatorDashboard({
   addEpisode,
   deleteCurrentShow,
   makeFeatured,
+  togglePublish,
+  deleteEpisode,
+  selectedEpisode,
+  setSelectedEpisode,
+  notice,
   form,
   setForm,
 }) {
@@ -756,6 +801,11 @@ function CreatorDashboard({
             New Upload
           </button>
         </div>
+        {notice && (
+          <div className={`${styles.notice} ${notice.type === "error" ? styles.noticeError : ""}`}>
+            {notice.message}
+          </div>
+        )}
         <div className={styles.analyticsGrid}>
           {[
             ["Total Views", "4.7M", Eye],
@@ -773,7 +823,13 @@ function CreatorDashboard({
         </div>
         <div className={styles.creatorGrid}>
           <article className={styles.creatorPanel}>
-            <h2>Create Show</h2>
+            <div className={styles.panelHeader}>
+              <div>
+                <span>Add Show</span>
+                <h2>Create a new title</h2>
+              </div>
+              <MonitorPlay size={21} />
+            </div>
             <input
               className={styles.creatorInput}
               placeholder="Show title"
@@ -808,7 +864,13 @@ function CreatorDashboard({
             </button>
           </article>
           <article className={styles.creatorPanel}>
-            <h2>Upload Center</h2>
+            <div className={styles.panelHeader}>
+              <div>
+                <span>Upload/URL Video</span>
+                <h2>Media package</h2>
+              </div>
+              <UploadCloud size={21} />
+            </div>
             <div className={styles.dropZone}>
               <UploadCloud size={32} />
               <strong>Drag video, trailer, cover, or subtitles</strong>
@@ -827,10 +889,28 @@ function CreatorDashboard({
               value={form.trailerUrl}
               onChange={(e) => setForm((prev) => ({ ...prev, trailerUrl: e.target.value }))}
             />
+            <input
+              className={styles.creatorInput}
+              placeholder="Subtitle URL (.vtt)"
+              value={form.subtitleUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, subtitleUrl: e.target.value }))}
+            />
           </article>
           <article className={styles.creatorPanel}>
-            <h2>Content Manager</h2>
+            <div className={styles.panelHeader}>
+              <div>
+                <span>Manage Shows</span>
+                <h2>Library control</h2>
+              </div>
+              <SlidersHorizontal size={21} />
+            </div>
             <div className={styles.managerList}>
+              {shows.length === 0 && (
+                <div className={styles.emptyMini}>
+                  <Film size={22} />
+                  <p>No shows in the library yet.</p>
+                </div>
+              )}
               {shows.map((show) => (
                 <button
                   key={show.id}
@@ -842,7 +922,10 @@ function CreatorDashboard({
                     <strong>{show.title}</strong>
                     <p>{show.episodes.length} episodes • {show.published ? "Published" : "Draft"}</p>
                   </div>
-                  {show.featured && <Star size={16} fill="currentColor" />}
+                  <span className={show.published ? styles.statusPublished : styles.statusDraft}>
+                    {show.featured ? <Star size={15} fill="currentColor" /> : null}
+                    {show.published ? "Live" : "Draft"}
+                  </span>
                 </button>
               ))}
             </div>
@@ -851,6 +934,10 @@ function CreatorDashboard({
                 <Star size={16} />
                 Mark Featured
               </button>
+              <button className={styles.secondaryBtn} onClick={() => togglePublish(selectedShow.id)}>
+                {selectedShow.published ? <X size={16} /> : <Check size={16} />}
+                {selectedShow.published ? "Unpublish" : "Publish"}
+              </button>
               <button className={styles.deleteBtn} onClick={deleteCurrentShow}>
                 <Trash2 size={16} />
                 Delete
@@ -858,7 +945,13 @@ function CreatorDashboard({
             </div>
           </article>
           <article className={styles.creatorPanel}>
-            <h2>Episode Metadata</h2>
+            <div className={styles.panelHeader}>
+              <div>
+                <span>Add Episode</span>
+                <h2>Episode metadata</h2>
+              </div>
+              <Plus size={21} />
+            </div>
             <input
               className={styles.creatorInput}
               placeholder="Episode title"
@@ -873,17 +966,29 @@ function CreatorDashboard({
             />
             <input
               className={styles.creatorInput}
+              placeholder="Duration, e.g. 42m"
+              value={form.episodeDuration}
+              onChange={(e) => setForm((prev) => ({ ...prev, episodeDuration: e.target.value }))}
+            />
+            <input
+              className={styles.creatorInput}
               placeholder="Thumbnail URL"
               value={form.thumbnailUrl}
               onChange={(e) => setForm((prev) => ({ ...prev, thumbnailUrl: e.target.value }))}
             />
             <div className={styles.orderList}>
+              {selectedShow.episodes.length === 0 && (
+                <div className={styles.emptyMini}>
+                  <Film size={22} />
+                  <p>No episodes yet. Add a title and MP4 URL to publish the first one.</p>
+                </div>
+              )}
               {selectedShow.episodes.map((episode, index) => (
-                <div key={episode.id}>
+                <button key={episode.id} onClick={() => setSelectedEpisode(episode)}>
                   <span>{index + 1}</span>
                   <p>{episode.title}</p>
                   <ChevronDown size={16} />
-                </div>
+                </button>
               ))}
             </div>
             <button className={styles.primaryBtn} onClick={addEpisode}>
@@ -892,8 +997,46 @@ function CreatorDashboard({
             </button>
           </article>
         </div>
+        <div className={styles.episodeManagerPanel}>
+          <div className={styles.panelHeader}>
+            <div>
+              <span>Edit/Delete Episode</span>
+              <h2>Currently selected episode</h2>
+            </div>
+            <Film size={21} />
+          </div>
+          {selectedEpisode ? (
+            <div className={styles.episodeManageCard}>
+              <img src={selectedEpisode.thumbnail} alt="" />
+              <div>
+                <strong>{selectedEpisode.title}</strong>
+                <p>{selectedEpisode.description}</p>
+                <div className={styles.watchMetadata}>
+                  <span>S{selectedEpisode.season || 1}</span>
+                  <span>{selectedEpisode.duration}</span>
+                  <span>{selectedEpisode.videoUrl}</span>
+                </div>
+              </div>
+              <button className={styles.deleteBtn} onClick={() => deleteEpisode(selectedEpisode.id)}>
+                <Trash2 size={16} />
+                Delete Episode
+              </button>
+            </div>
+          ) : (
+            <div className={styles.emptyMini}>
+              <Film size={22} />
+              <p>Select an episode from the metadata list to manage it.</p>
+            </div>
+          )}
+        </div>
         <div className={styles.trendPanel}>
-          <h2>Trending Content</h2>
+          <div className={styles.panelHeader}>
+            <div>
+              <span>Featured Content</span>
+              <h2>Trending Content</h2>
+            </div>
+            <BarChart3 size={21} />
+          </div>
           <div className={styles.trendBars}>
             {shows.map((show) => (
               <div key={show.id}>
@@ -925,6 +1068,8 @@ export default function Home() {
   const [reactions, setReactions] = useState({});
   const [progressMap, setProgressMap] = useState({});
   const [compactNav, setCompactNav] = useState(false);
+  const [notice, setNotice] = useState(null);
+  const [hydrated, setHydrated] = useState(false);
   const [form, setForm] = useState({
     showTitle: "",
     showDescription: "",
@@ -935,13 +1080,21 @@ export default function Home() {
     episodeUrl: "",
     thumbnailUrl: "",
     trailerUrl: "",
+    subtitleUrl: "",
+    episodeDuration: "",
   });
 
   useEffect(() => {
-    setMyList(JSON.parse(localStorage.getItem("smbaflex-list") || "[]"));
-    setReactions(JSON.parse(localStorage.getItem("smbaflex-reactions") || "{}"));
-    setProgressMap(JSON.parse(localStorage.getItem("smbaflex-progress") || "{}"));
+    setShows(JSON.parse(localStorage.getItem(SHOWS_STORAGE_KEY) || "null") || initialShows);
+    setMyList(JSON.parse(localStorage.getItem(LIST_STORAGE_KEY) || "[]"));
+    setReactions(JSON.parse(localStorage.getItem(REACTIONS_STORAGE_KEY) || "{}"));
+    setProgressMap(JSON.parse(localStorage.getItem(PROGRESS_STORAGE_KEY) || "{}"));
+    setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (hydrated) localStorage.setItem(SHOWS_STORAGE_KEY, JSON.stringify(shows));
+  }, [shows, hydrated]);
 
   useEffect(() => {
     const onScroll = () => setCompactNav(window.scrollY > 48);
@@ -958,6 +1111,26 @@ export default function Home() {
     () => shows.find((show) => show.featured) || shows[0],
     [shows]
   );
+
+  useEffect(() => {
+    if (!selectedShow && shows[0]) setSelectedShowId(shows[0].id);
+  }, [selectedShow, shows]);
+
+  useEffect(() => {
+    if (!selectedShow) return;
+    const episodeBelongsToShow = selectedShow.episodes.some(
+      (episode) => episode.id === selectedEpisode?.id
+    );
+    if (!episodeBelongsToShow) {
+      setSelectedEpisode(selectedShow.episodes[0] || null);
+    }
+  }, [selectedShow, selectedEpisode]);
+
+  const showNotice = (type, message) => {
+    setNotice({ type, message });
+    window.clearTimeout(window.__smbaflexNoticeTimer);
+    window.__smbaflexNoticeTimer = window.setTimeout(() => setNotice(null), 3600);
+  };
 
   const handleEnter = () => {
     if (enteredCode === CREATOR_CODE) {
@@ -991,11 +1164,17 @@ export default function Home() {
 
   const playShow = (show) => {
     const episode = show.episodes[0];
+    if (!episode) {
+      setSelectedShowId(show.id);
+      setSelectedEpisode(null);
+      setView("watch");
+      return;
+    }
     setSelectedShowId(show.id);
     setSelectedEpisode(episode);
     setProgressMap((prev) => {
       const next = { ...prev, [episode.id]: prev[episode.id] || episode.progress || 3 };
-      localStorage.setItem("smbaflex-progress", JSON.stringify(next));
+      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
     setView("watch");
@@ -1004,7 +1183,7 @@ export default function Home() {
   const toggleList = (id) => {
     setMyList((prev) => {
       const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
-      localStorage.setItem("smbaflex-list", JSON.stringify(next));
+      localStorage.setItem(LIST_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
   };
@@ -1012,13 +1191,16 @@ export default function Home() {
   const toggleReaction = (id, type) => {
     setReactions((prev) => {
       const next = { ...prev, [id]: prev[id] === type ? null : type };
-      localStorage.setItem("smbaflex-reactions", JSON.stringify(next));
+      localStorage.setItem(REACTIONS_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
   };
 
   const addShow = () => {
-    if (!form.showTitle.trim()) return;
+    if (!form.showTitle.trim()) {
+      showNotice("error", "Add a show title before creating a new title.");
+      return;
+    }
     const show = {
       id: `show-${Date.now()}`,
       title: form.showTitle,
@@ -1049,41 +1231,83 @@ export default function Home() {
     setShows((prev) => [...prev, show]);
     setSelectedShowId(show.id);
     setForm((prev) => ({ ...prev, showTitle: "", showDescription: "", showCover: "", showBanner: "" }));
+    showNotice("success", `${show.title} was added to the SMBAFLEX library.`);
   };
 
   const addEpisode = () => {
-    if (!form.episodeTitle.trim()) return;
+    if (!selectedShow) return;
+    if (!form.episodeTitle.trim()) {
+      showNotice("error", "Add an episode title before saving.");
+      return;
+    }
+    if (!form.episodeUrl.trim()) {
+      showNotice("error", "Add a direct MP4 video URL before saving the episode.");
+      return;
+    }
     const episode = {
       id: `ep-${Date.now()}`,
       title: form.episodeTitle,
       description: form.episodeDescription || "New episode.",
-      duration: "35m",
+      duration: form.episodeDuration || "35m",
       rating: "TV-14",
       season: 1,
       progress: 0,
       thumbnail:
         form.thumbnailUrl ||
         "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=900&auto=format&fit=crop",
-      videoUrl: form.episodeUrl || "https://www.w3schools.com/html/mov_bbb.mp4",
+      videoUrl: form.episodeUrl,
+      subtitleUrl: form.subtitleUrl,
     };
     setShows((prev) =>
       prev.map((show) =>
         show.id === selectedShowId ? { ...show, episodes: [...show.episodes, episode] } : show
       )
     );
-    setForm((prev) => ({ ...prev, episodeTitle: "", episodeDescription: "", episodeUrl: "", thumbnailUrl: "" }));
+    setSelectedEpisode(episode);
+    setForm((prev) => ({
+      ...prev,
+      episodeTitle: "",
+      episodeDescription: "",
+      episodeUrl: "",
+      thumbnailUrl: "",
+      subtitleUrl: "",
+      episodeDuration: "",
+    }));
+    showNotice("success", `${episode.title} was added to ${selectedShow.title}.`);
   };
 
   const deleteCurrentShow = () => {
-    if (shows.length <= 1) return;
+    if (shows.length <= 1) {
+      showNotice("error", "You need at least one show in the library.");
+      return;
+    }
     const nextShows = shows.filter((show) => show.id !== selectedShowId);
     setShows(nextShows);
     setSelectedShowId(nextShows[0].id);
-    setSelectedEpisode(nextShows[0].episodes[0]);
+    setSelectedEpisode(nextShows[0].episodes[0] || null);
+    showNotice("success", "Show deleted from the library.");
   };
 
   const makeFeatured = (id) => {
     setShows((prev) => prev.map((show) => ({ ...show, featured: show.id === id })));
+    showNotice("success", "Featured content updated.");
+  };
+
+  const togglePublish = (id) => {
+    setShows((prev) =>
+      prev.map((show) => (show.id === id ? { ...show, published: !show.published } : show))
+    );
+    showNotice("success", "Publish status updated.");
+  };
+
+  const deleteEpisode = (episodeId) => {
+    if (!selectedShow) return;
+    const nextEpisodes = selectedShow.episodes.filter((episode) => episode.id !== episodeId);
+    setShows((prev) =>
+      prev.map((show) => (show.id === selectedShow.id ? { ...show, episodes: nextEpisodes } : show))
+    );
+    setSelectedEpisode(nextEpisodes[0] || null);
+    showNotice("success", "Episode deleted.");
   };
 
   if (!mode) {
@@ -1122,7 +1346,7 @@ export default function Home() {
           onPlay={playShow}
           onInfo={(show) => {
             setSelectedShowId(show.id);
-            setSelectedEpisode(show.episodes[0]);
+            setSelectedEpisode(show.episodes[0] || null);
             setView("watch");
           }}
           onToggleList={toggleList}
@@ -1137,9 +1361,10 @@ export default function Home() {
           onSelectEpisode={setSelectedEpisode}
           onBack={() => setView("home")}
           onLike={toggleReaction}
-          liked={reactions[selectedShow.id] === "like"}
-          disliked={reactions[selectedShow.id] === "dislike"}
+          liked={selectedShow ? reactions[selectedShow.id] === "like" : false}
+          disliked={selectedShow ? reactions[selectedShow.id] === "dislike" : false}
           progressMap={progressMap}
+          setProgressMap={setProgressMap}
         />
       )}
       {view === "creator" && mode === "creator" && (
@@ -1151,6 +1376,11 @@ export default function Home() {
           addEpisode={addEpisode}
           deleteCurrentShow={deleteCurrentShow}
           makeFeatured={makeFeatured}
+          togglePublish={togglePublish}
+          deleteEpisode={deleteEpisode}
+          selectedEpisode={selectedEpisode}
+          setSelectedEpisode={setSelectedEpisode}
+          notice={notice}
           form={form}
           setForm={setForm}
         />
