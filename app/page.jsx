@@ -11,6 +11,7 @@ import {
   Tv,
   Edit3,
   Trash2,
+  User,
 } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -116,7 +117,7 @@ function IntroAnimation({ onDone }) {
   );
 }
 
-function LoginScreen({ code, setCode, error, onEnter }) {
+function LoginScreen({ code, setCode, error, onEnter, onGuest }) {
   return (
     <main className={styles.loginPage}>
       <div className={styles.collage}>
@@ -147,6 +148,17 @@ function LoginScreen({ code, setCode, error, onEnter }) {
 
           <button onClick={onEnter} className={styles.loginButton}>
             Sign In
+          </button>
+
+          <div className={styles.loginDivider}>
+            <span />
+            <p>OR</p>
+            <span />
+          </div>
+
+          <button onClick={onGuest} className={styles.guestButton}>
+            <User size={18} />
+            Continue as Guest
           </button>
 
           {error && <p className={styles.loginError}>{error}</p>}
@@ -234,6 +246,13 @@ export default function Home() {
     setError("Incorrect access code");
   };
 
+  const handleGuestEnter = () => {
+    setMode("viewer");
+    setError("");
+    setEnteredCode("");
+    setShowIntro(true);
+  };
+
   const logout = () => {
     setMode(null);
     setEnteredCode("");
@@ -314,7 +333,13 @@ export default function Home() {
 
   if (!mode) {
     return (
-      <LoginScreen code={enteredCode} setCode={setEnteredCode} error={error} onEnter={handleEnter} />
+      <LoginScreen
+        code={enteredCode}
+        setCode={setEnteredCode}
+        error={error}
+        onEnter={handleEnter}
+        onGuest={handleGuestEnter}
+      />
     );
   }
 
